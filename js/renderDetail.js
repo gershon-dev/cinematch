@@ -1,0 +1,1 @@
+// renderDetail.js

@@ -1,0 +1,49 @@
+/* Card, modal, button, and nav components */
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--charcoal);
+  border-bottom: 2px solid var(--gold);
+}
+.logo { font-size: 2rem; color: var(--gold); text-decoration: none; }
+.site-nav { display: flex; gap: 1.25rem; }
+.site-nav a { color: var(--offwhite); text-decoration: none; padding: 0.25rem 0; }
+.site-nav a:hover, .site-nav a:focus-visible { color: var(--gold); }
+
+.poster-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+}
+.carousel {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.75rem;
+  scroll-snap-type: x proximity;
+}
+.carousel .movie-card { flex: 0 0 170px; scroll-snap-align: start; }
+
+.movie-card {
+  background: var(--charcoal);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+  transition: transform 0.15s ease;
+}
+.movie-card:hover { transform: scale(1.04); }
+.movie-card img, .movie-card__noposter { display: block; width: 100%; aspect-ratio: 2 / 3; object-fit: cover; }
+.movie-card__noposter { display: grid; place-items: center; background: #223041; color: var(--grey); }
+.movie-card__info { padding: 0.5rem 0.6rem 0.7rem; }
+.movie-card__title { margin: 0; font-size: 1.15rem; line-height: 1.15; }
+.movie-card__meta { margin: 0.2rem 0 0; color: var(--grey); font-size: 0.85rem; }
+.rating { color: var(--gold); margin-right: 0.4rem; }
+
+@media (min-width: 700px) {
+  .poster-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+  .carousel .movie-card { flex-basis: 200px; }
+}

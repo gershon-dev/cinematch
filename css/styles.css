@@ -1,0 +1,33 @@
+/* Global styles, layout, typography, color variables */
+:root {
+  --navy: #0B1D33;
+  --charcoal: #16202B;
+  --gold: #C9A227;
+  --offwhite: #F4F1EA;
+  --grey: #8A8F98;
+  --radius: 8px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--navy);
+  color: var(--offwhite);
+  font-family: "Inter", system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+h1, h2, h3, .logo {
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+main { max-width: 1200px; margin: 0 auto; padding: 1rem; }
+h2 { font-size: 1.8rem; margin: 1.5rem 0 0.75rem; }
+
+.status { color: var(--grey); }
+.status--error { color: #e08a8a; }
+
+.site-footer { text-align: center; color: var(--grey); font-size: 0.8rem; padding: 2rem 1rem; }
