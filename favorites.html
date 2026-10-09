@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Favorites | CineMatch</title>
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -13,6 +14,16 @@
 <body>
   <header class="site-header">
     <a class="logo" href="index.html">CineMatch</a>
+    <form class="search-form" action="index.html" role="search">
+      <label for="search-input" class="visually-hidden">Search</label>
+      <input id="search-input" type="search" name="q" placeholder="Search…" autocomplete="off">
+      <label for="search-type" class="visually-hidden">Search for</label>
+      <select id="search-type" name="type">
+        <option value="movie">Movies</option>
+        <option value="person">People</option>
+      </select>
+      <button type="submit" class="btn btn--search">Search</button>
+    </form>
     <nav class="site-nav" aria-label="Main">
       <a href="index.html">Browse</a>
       <a href="watchlist.html">Watchlist</a>
@@ -21,6 +32,7 @@
   </header>
   <main>
     <h1>Favorites</h1>
+    <div id="favorites-list" class="poster-grid"></div>
   </main>
 
   <footer class="site-footer"><p>Data from TMDB. Not endorsed or certified by TMDB.</p></footer>

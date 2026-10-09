@@ -17,3 +17,37 @@ export function normalizeMovie(raw) {
 export function normalizeList(results) {
   return results.map(normalizeMovie);
 }
+
+// Local copy of TMDB's genre IDs (json/genres.json).
+export async function loadGenres() {
+  const response = await fetch("json/genres.json");
+  if (!response.ok) throw new Error("Could not load genres.json");
+  return response.json();
+}
+
+export function formatRuntime(minutes) {
+  if (!minutes) return "";
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  return hours ? `${hours}h ${mins}m` : `${mins}m`;
+}
+
+// Turns the /movie/{id} response (with credits and similar) into one view-ready object.
+export function normalizeDetails(raw) {
+  const genres = raw.genres || [];
+  const base = normalizeMovie({ ...raw, genre_ids: genres.map((g) => g.id) });
+  return {
+    ...base,
+    tagline: raw.tagline || "",
+    runtime: raw.runtime || 0,
+    releaseDate: raw.release_date || "",
+    genres,
+    cast: (raw.credits?.cast || []).slice(0, 15).map((p) => ({
+      id: p.id,
+      name: p.name,
+      character: p.character || "",
+      photoUrl: p.profile_path ? `${IMAGE_BASE}/w185${p.profile_path}` : null,
+    })),
+    similar: normalizeList(raw.similar?.results || []).slice(0, 12),
+  };
+}
