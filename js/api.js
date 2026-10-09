@@ -1,5 +1,8 @@
 // api.js — all TMDB requests live here.
-import { TMDB_BASE_URL, TMDB_API_KEY } from "../config.js";
+import * as config from "../config.js";
+
+// Read as properties so the site still loads if config.js has no OMDb key yet.
+const { TMDB_BASE_URL, TMDB_API_KEY, OMDB_API_KEY } = config;
 
 async function fetchTMDB(path, params = {}) {
   const url = new URL(`${TMDB_BASE_URL}${path}`);
@@ -58,4 +61,36 @@ export async function getPersonMovies(personId) {
   const byId = new Map();
   for (const movie of [...data.cast, ...directed]) byId.set(movie.id, movie);
   return [...byId.values()].sort((a, b) => b.popularity - a.popularity).slice(0, 40);
+}
+
+// ---------- second API: OMDb (IMDb, Rotten Tomatoes and Metacritic data) ----------
+const OMDB_URL = "https://www.omdbapi.com/";
+
+// Returns the raw OMDb record for an IMDb id, or null if there is no key or no match.
+export async function getOmdbDetails(imdbId) {
+  if (!OMDB_API_KEY || OMDB_API_KEY === "YOUR_OMDB_KEY_HERE") return null;
+
+  const cacheKey = `cinematch-omdb-${imdbId}`;
+  try {
+    const cached = sessionStorage.getItem(cacheKey);
+    if (cached) return JSON.parse(cached);
+  } catch {
+    // The cache is optional, so ignore storage problems.
+  }
+
+  const url = new URL(OMDB_URL);
+  url.searchParams.set("apikey", OMDB_API_KEY);
+  url.searchParams.set("i", imdbId);
+
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`OMDb request failed (${response.status})`);
+  const data = await response.json();
+  if (data.Response === "False") return null;
+
+  try {
+    sessionStorage.setItem(cacheKey, JSON.stringify(data));
+  } catch {
+    // Ignore storage problems.
+  }
+  return data;
 }

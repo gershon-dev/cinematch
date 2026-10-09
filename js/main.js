@@ -1,11 +1,11 @@
 // main.js — page entry point. Each block only runs on the page that has its elements.
 import {
   getTrending, getPopular, searchMovies, discoverMovies,
-  getMovieDetails, searchPeople, getPersonMovies,
+  getMovieDetails, searchPeople, getPersonMovies, getOmdbDetails,
 } from "./api.js";
-import { normalizeList, normalizeDetails, loadGenres } from "./movieService.js";
+import { normalizeList, normalizeDetails, normalizeOmdb, loadGenres } from "./movieService.js";
 import { renderMovies } from "./renderMovies.js";
-import { renderDetail } from "./renderDetail.js";
+import { renderDetail, renderOmdbPanel } from "./renderDetail.js";
 import { getWatchlist, getFavorites } from "./storageService.js";
 import { showLoading, showError, openSurpriseModal } from "./uiHelpers.js";
 
@@ -135,6 +135,13 @@ if (detailEl) {
         const movie = normalizeDetails(raw);
         document.title = `${movie.title} | CineMatch`;
         renderDetail(detailEl, movie);
+
+        // Second API: add IMDb / Rotten Tomatoes / Metacritic data when available.
+        if (movie.imdbId) {
+          getOmdbDetails(movie.imdbId)
+            .then((omdb) => renderOmdbPanel(detailEl, normalizeOmdb(omdb)))
+            .catch((error) => console.warn("OMDb data unavailable", error));
+        }
       })
       .catch((error) => { console.error(error); showError(detailEl, "Could not load this movie."); });
   }

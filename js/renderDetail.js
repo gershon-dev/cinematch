@@ -1,4 +1,3 @@
-// renderDetail.js
 // renderDetail.js — builds the movie detail view.
 import { createActionButtons, renderMovies } from "./renderMovies.js";
 import { escapeHTML } from "./uiHelpers.js";
@@ -40,6 +39,10 @@ export function renderDetail(container, movie) {
         </div>
       </div>
     </section>
+    <section id="omdb-section" class="ratings-section" hidden>
+      <h2>Ratings &amp; Facts</h2>
+      <div id="omdb-panel"></div>
+    </section>
     <section>
       <h2>Cast</h2>
       <div class="cast-row">${movie.cast.map(castCard).join("") || '<p class="status">No cast information.</p>'}</div>
@@ -51,4 +54,32 @@ export function renderDetail(container, movie) {
 
   container.querySelector("#detail-actions").append(createActionButtons(movie));
   renderMovies(container.querySelector("#similar-row"), movie.similar, { emptyMessage: "No similar movies found." });
+}
+
+// Fills the Ratings & Facts panel with OMDb data. Does nothing if there is no data.
+export function renderOmdbPanel(container, omdb) {
+  const section = container.querySelector("#omdb-section");
+  const panel = container.querySelector("#omdb-panel");
+  if (!omdb || !section) return;
+
+  const scores = [["IMDb", omdb.imdb], ["Rotten Tomatoes", omdb.rottenTomatoes], ["Metacritic", omdb.metacritic]]
+    .filter(([, value]) => value)
+    .map(([label, value]) => `
+      <div class="score">
+        <span class="score__value">${escapeHTML(value)}</span>
+        <span class="score__label">${label}</span>
+      </div>`)
+    .join("");
+
+  const facts = [["Rated", omdb.rated], ["Director", omdb.director], ["Awards", omdb.awards], ["Box office", omdb.boxOffice]]
+    .filter(([, value]) => value)
+    .map(([label, value]) => `<dt>${label}</dt><dd>${escapeHTML(value)}</dd>`)
+    .join("");
+
+  if (!scores && !facts) return;
+  panel.innerHTML = `
+    <div class="scores">${scores}</div>
+    <dl class="facts">${facts}</dl>
+    <p class="credit">Ratings data from OMDb.</p>`;
+  section.hidden = false;
 }

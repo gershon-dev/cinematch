@@ -38,6 +38,7 @@ export function normalizeDetails(raw) {
   const base = normalizeMovie({ ...raw, genre_ids: genres.map((g) => g.id) });
   return {
     ...base,
+    imdbId: raw.imdb_id || "",
     tagline: raw.tagline || "",
     runtime: raw.runtime || 0,
     releaseDate: raw.release_date || "",
@@ -49,5 +50,22 @@ export function normalizeDetails(raw) {
       photoUrl: p.profile_path ? `${IMAGE_BASE}/w185${p.profile_path}` : null,
     })),
     similar: normalizeList(raw.similar?.results || []).slice(0, 12),
+  };
+}
+
+const clean = (value) => (!value || value === "N/A" ? null : value);
+
+// Turns an OMDb record into the few fields the detail page shows.
+export function normalizeOmdb(raw) {
+  if (!raw) return null;
+  const ratingFrom = (source) => raw.Ratings?.find((r) => r.Source === source)?.Value || null;
+  return {
+    imdb: clean(raw.imdbRating) ? `${raw.imdbRating}/10` : null,
+    rottenTomatoes: ratingFrom("Rotten Tomatoes"),
+    metacritic: clean(raw.Metascore) ? `${raw.Metascore}/100` : null,
+    rated: clean(raw.Rated),
+    director: clean(raw.Director),
+    awards: clean(raw.Awards),
+    boxOffice: clean(raw.BoxOffice),
   };
 }

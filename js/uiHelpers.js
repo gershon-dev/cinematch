@@ -5,7 +5,7 @@ export function escapeHTML(text) {
 }
 
 export function showLoading(container) {
-  container.innerHTML = '<p class="status">Loading…</p>';
+  container.innerHTML = '<p class="status" role="status"><span class="spinner" aria-hidden="true"></span>Loading…</p>';
 }
 
 export function showError(container, message) {
